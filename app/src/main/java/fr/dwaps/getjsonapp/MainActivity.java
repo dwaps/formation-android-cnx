@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +24,18 @@ public class MainActivity extends AppCompatActivity {
                 tv,
                 "https://dwaps.fr/tests/bdd-to-json",
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(
+                this,
+                connectToData.wifiIsEnabled() ?
+                    "L'appareil est connecté en wifi"
+                    :
+                    "La connexion wifi est désactivée !",
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override

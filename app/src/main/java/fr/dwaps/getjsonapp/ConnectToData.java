@@ -125,4 +125,19 @@ public class ConnectToData {
         }
         else Toast.makeText(this.ctx, "Problème de connexion...", Toast.LENGTH_SHORT).show();
     }
+
+    public boolean wifiIsEnabled() {
+        return this.wifi;
+    }
+
+
+    // MUTATEURS/ACCESSEURS
+
+    public URL getUrl() {
+        return this.url;
+    }
+
+    public String getStream() {
+        return this.stream;
+    }
 }
