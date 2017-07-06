@@ -16,7 +16,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        connectToData = new ConnectToData((ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
+        connectToData = new ConnectToData(
+                this,
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
 
         tv = (TextView) findViewById(R.id.tv);
     }
