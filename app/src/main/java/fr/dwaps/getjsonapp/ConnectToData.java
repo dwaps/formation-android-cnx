@@ -6,6 +6,13 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 /**
  * Created by Michael on 06/07/2017.
  */
@@ -15,13 +22,20 @@ public class ConnectToData {
 
     private ConnectivityManager cm = null;
     private NetworkInfo ni = null;
+    private URL url = null;
 
     private boolean cnxEstablished = false, wifi = false;
 
     private Context ctx = null;
 
-    ConnectToData(Context ctx, ConnectivityManager cm)
+    ConnectToData(Context ctx, String url, ConnectivityManager cm)
     {
+        try {
+            this.url = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
         this.ctx = ctx;
         this.cm = cm;
 
@@ -52,6 +66,47 @@ public class ConnectToData {
     {
         if(this.cnxEstablished)
         {
+            final URL url = this.url;
+
+            new Thread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            int codeChar;
+                            StringBuilder sb = new StringBuilder();
+
+                            HttpURLConnection huc;
+                            InputStream is = null;
+
+                            try
+                            {
+                                huc = (HttpURLConnection) url.openConnection();
+                                is = new BufferedInputStream(huc.getInputStream());
+
+                                while((codeChar=is.read()) != -1)
+                                    sb.append((char) codeChar);
+
+                                Log.i(TAG, "run: data => " + sb.toString());
+                            }
+                            catch (IOException e)
+                            {
+                                e.printStackTrace();
+                                e.getMessage();
+                                Log.i(TAG, "run: Les données n'ont pas pu être lues...");
+                            }
+                            finally
+                            {
+                                if(is != null)
+                                    try {
+                                        is.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        e.getMessage();
+                                    }
+                            }
+                        }
+                    }
+            ).start();
         }
         else Toast.makeText(this.ctx, "Problème de connexion...", Toast.LENGTH_SHORT).show();
     }

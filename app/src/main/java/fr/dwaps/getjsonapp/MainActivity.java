@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
         connectToData = new ConnectToData(
                 this,
+                "https://opendata.paris.fr/api/records/1.0/search/?dataset=adresse_paris&rows=34",
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE));
 
         tv = (TextView) findViewById(R.id.tv);
