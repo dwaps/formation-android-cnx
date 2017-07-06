@@ -24,7 +24,10 @@ public class ConnectToData {
     {
         this.ctx = ctx;
         this.cm = cm;
+
         this.checkForNetworkState();
+
+        this.requestForStream();
     }
 
     private boolean checkForNetworkState()
@@ -43,5 +46,13 @@ public class ConnectToData {
         Toast.makeText(this.ctx, "Connexion nickel !", Toast.LENGTH_SHORT).show();
 
         return cnxEstablished;
+    }
+
+    private void requestForStream()
+    {
+        if(this.cnxEstablished)
+        {
+        }
+        else Toast.makeText(this.ctx, "Problème de connexion...", Toast.LENGTH_SHORT).show();
     }
 }
