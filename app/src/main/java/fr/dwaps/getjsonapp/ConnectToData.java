@@ -3,7 +3,10 @@ package fr.dwaps.getjsonapp;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedInputStream;
@@ -25,10 +28,12 @@ public class ConnectToData {
     private URL url = null;
 
     private boolean cnxEstablished = false, wifi = false;
+    private String stream = "";
+    private TextView tv = null;
 
     private Context ctx = null;
 
-    ConnectToData(Context ctx, String url, ConnectivityManager cm)
+    ConnectToData(Context ctx, TextView tv, String url, ConnectivityManager cm)
     {
         try {
             this.url = new URL(url);
@@ -38,6 +43,7 @@ public class ConnectToData {
 
         this.ctx = ctx;
         this.cm = cm;
+        this.tv = tv;
 
         this.checkForNetworkState();
 
@@ -67,6 +73,13 @@ public class ConnectToData {
         if(this.cnxEstablished)
         {
             final URL url = this.url;
+            final Handler h = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    tv.setText((String) msg.obj);
+                }
+            };
 
             new Thread(
                     new Runnable() {
@@ -86,7 +99,9 @@ public class ConnectToData {
                                 while((codeChar=is.read()) != -1)
                                     sb.append((char) codeChar);
 
-                                Log.i(TAG, "run: data => " + sb.toString());
+                                Message m = new Message();
+                                m.obj = sb.toString();
+                                h.sendMessage(m);
                             }
                             catch (IOException e)
                             {
